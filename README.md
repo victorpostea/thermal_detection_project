@@ -1,7 +1,7 @@
 start virtual environment
 ```sh
 python3 -m venv venv
-source /venv/bin/activate/ #mac / linux
+source venv/bin/activate #mac / linux
 \venv\Scripts\activate #windows
 ```
 
