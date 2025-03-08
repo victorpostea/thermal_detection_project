@@ -18,6 +18,29 @@ def preprocess_thermal_images(data_yaml_path):
     logger = logging.getLogger(__name__)
     logger.info("Preprocessing thermal images...")
 
+    # First, read existing data.yaml to preserve class names
+    existing_names = {}
+    try:
+        with open(data_yaml_path, 'r') as f:
+            lines = f.readlines()
+            reading_names = False
+            for line in lines:
+                if line.strip() == "names:":
+                    reading_names = True
+                elif reading_names and line.strip().startswith("nc:"):
+                    reading_names = False
+                elif reading_names and ":" in line:
+                    idx, name = line.strip().split(":", 1)
+                    existing_names[int(idx)] = name.strip()
+    except Exception as e:
+        logger.warning(f"Could not read existing class names: {e}")
+        # Default names if we can't read the existing ones
+        existing_names = {
+            0: "person",
+            1: "bicycle/bike",
+            2: "vehicle/car"
+        }
+
     # Create processed directories if they don't exist
     processed_train = Path("data/processed/train")
     processed_val = Path("data/processed/val")
@@ -56,7 +79,7 @@ def preprocess_thermal_images(data_yaml_path):
         cv2.imwrite(str(jpg_path), img)
         logger.info(f"Processed {tiff_file.name} -> {jpg_path}")
 
-    # Update data.yaml with absolute paths
+    # Update data.yaml with absolute paths while preserving class names
     project_root = Path.cwd()
     with open(data_yaml_path, 'w') as f:
         f.write(f"path: {str(project_root)}\n")
@@ -64,14 +87,13 @@ def preprocess_thermal_images(data_yaml_path):
         f.write(f"val: {str(processed_val)}\n")
         f.write("\n")
         f.write("names:\n")
-        f.write("  0: Pedestrian\n")
-        f.write("  1: Cyclist\n")
-        f.write("  2: Car\n")
+        for idx in sorted(existing_names.keys()):
+            f.write(f"  {idx}: {existing_names[idx]}\n")
         f.write("\n")
         f.write("nc: 3  # number of classes\n")
 
     logger.info("Preprocessing complete!")
-    logger.info(f"Updated {data_yaml_path} with processed image paths")
+    logger.info(f"Updated {data_yaml_path} with processed image paths and preserved class names")
 
 def train_model():
     # Set up logging

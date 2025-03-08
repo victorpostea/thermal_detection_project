@@ -92,5 +92,5 @@ def run_inference(model_path, image_path):
 if __name__ == "__main__":
     run_inference(
         model_path="runs/train/thermal_yolo/weights/best.pt",  # Updated to use the latest trained model
-        image_path="data/processed/train/images/image_7.jpg"  # Updated to use processed jpg image
+        image_path="data/processed/train/images/image_4.jpg"  # Fixed extension from .jpeg to .jpg
     )

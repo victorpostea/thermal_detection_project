@@ -10,9 +10,9 @@ logger = logging.getLogger(__name__)
 
 # Define your class mapping
 CLASS_MAPPING = {
-    1: 0,  # Pedestrian
-    2: 1,  # Cyclist
-    3: 2   # Car
+    1: 0,  # person
+    2: 1,  # bicycle/bike
+    3: 2   # vehicle/car
 }
 
 def convert_labels(txt_file, images_dir, output_dir):

@@ -1,10 +1,10 @@
-path: C:\Users\victo\dev\thermal_detection_project
-train: data\processed\train
-val: data\processed\val
+path: /Users/victorpostea/dev/thermal_detection_project
+train: data/processed/train
+val: data/processed/val
 
 names:
-  0: Pedestrian
-  1: Cyclist
-  2: Car
+  0: person
+  1: bicycle/bike
+  2: vehicle/car
 
 nc: 3  # number of classes
