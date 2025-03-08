@@ -11,4 +11,4 @@ def train_yolo(data_yaml, epochs=50, model_type="yolov8n.pt"):
     )
 
 if __name__ == "__main__":
-    train_yolo("../data/data.yaml", epochs=50, model_type="yolov8n.pt")
+    train_yolo("data/data.yaml", epochs=50, model_type="yolov8n.pt")

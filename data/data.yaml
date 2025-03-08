@@ -1,0 +1,7 @@
+train: /Users/victorpostea/dev/thermal_detection_project/data/images/train
+val: /Users/victorpostea/dev/thermal_detection_project/data/images/val
+
+names:
+  0: Pedestrian
+  1: Cyclist
+  2: Car
