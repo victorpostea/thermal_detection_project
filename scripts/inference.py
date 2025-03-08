@@ -2,6 +2,7 @@ from ultralytics import YOLO
 import cv2
 import numpy as np
 import os
+import argparse
 
 def preprocess_thermal_image(image_path):
     """
@@ -27,7 +28,7 @@ def preprocess_thermal_image(image_path):
     
     return img
 
-def run_inference(model_path, image_path):
+def run_inference(model_path, image_path, conf_threshold=0.25):
     # Check if the model exists
     if not os.path.exists(model_path):
         raise FileNotFoundError(f"Model not found at: {model_path}")
@@ -61,7 +62,7 @@ def run_inference(model_path, image_path):
             return
     
     model = YOLO(model_path)
-    results = model.predict(source=image_path, conf=0.30)  # Lowered confidence threshold to 0.1
+    results = model.predict(source=image_path, conf=conf_threshold)
 
     # Print and visualize results
     for result in results:
@@ -85,12 +86,24 @@ def run_inference(model_path, image_path):
         print(f"\nImage shape: {annotated_frame.shape}")
         print(f"Image dtype: {annotated_frame.dtype}")
         
+        # Show the image
         cv2.imshow("Detections", annotated_frame)
+        print("\nPress any key to close the window...")
         cv2.waitKey(0)
         cv2.destroyAllWindows()
 
 if __name__ == "__main__":
+    parser = argparse.ArgumentParser(description='Run inference on thermal images')
+    parser.add_argument('--source', type=str, required=True, help='Path to the image file')
+    parser.add_argument('--model', type=str, default="runs/train/thermal_yolo/weights/best.pt", 
+                      help='Path to the model weights')
+    parser.add_argument('--conf', type=float, default=0.25, 
+                      help='Confidence threshold (0-1)')
+    
+    args = parser.parse_args()
+    
     run_inference(
-        model_path="runs/train/thermal_yolo/weights/best.pt",  # Updated to use the latest trained model
-        image_path="data/processed/train/images/image_4.jpg"  # Fixed extension from .jpeg to .jpg
+        model_path=args.model,
+        image_path=args.source,
+        conf_threshold=args.conf
     )
