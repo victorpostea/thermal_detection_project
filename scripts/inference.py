@@ -1,6 +1,7 @@
 from ultralytics import YOLO
 import cv2
 import numpy as np
+import os
 
 def preprocess_thermal_image(image_path):
     """
@@ -27,11 +28,28 @@ def preprocess_thermal_image(image_path):
     return img
 
 def run_inference(model_path, image_path):
+    # Check if the model exists
+    if not os.path.exists(model_path):
+        raise FileNotFoundError(f"Model not found at: {model_path}")
+    
+    # Check if the image exists
+    if not os.path.exists(image_path):
+        # Try changing extension from .tiff to .jpg if it doesn't exist
+        if image_path.lower().endswith(('.tiff', '.tif')):
+            jpg_path = image_path[:-5] + '.jpg'  # Remove .tiff or .tif and add .jpg
+            if os.path.exists(jpg_path):
+                print(f"Original image not found at {image_path}, using processed version at {jpg_path}")
+                image_path = jpg_path
+            else:
+                raise FileNotFoundError(f"Image not found at: {image_path} or {jpg_path}")
+        else:
+            raise FileNotFoundError(f"Image not found at: {image_path}")
+
     print(f"Loading model from: {model_path}")
     print(f"Running inference on image: {image_path}")
     
-    # Preprocess the image if it's a TIFF file
-    if image_path.lower().endswith('.tiff') or image_path.lower().endswith('.tif'):
+    # Only preprocess if it's a TIFF file
+    if image_path.lower().endswith(('.tiff', '.tif')):
         try:
             preprocessed_img = preprocess_thermal_image(image_path)
             # Save preprocessed image temporarily
@@ -43,7 +61,7 @@ def run_inference(model_path, image_path):
             return
     
     model = YOLO(model_path)
-    results = model.predict(source=image_path, conf=0.25)  # Lowered confidence threshold
+    results = model.predict(source=image_path, conf=0.30)  # Lowered confidence threshold to 0.1
 
     # Print and visualize results
     for result in results:
@@ -51,16 +69,20 @@ def run_inference(model_path, image_path):
         if len(boxes) == 0:
             print("No detections found!")
         else:
-            print(f"Found {len(boxes)} detections:")
-            print("Bounding boxes:", boxes.xyxy.tolist())
-            print("Classes:", boxes.cls.tolist())
-            print("Confidences:", boxes.conf.tolist())
+            print(f"\nFound {len(boxes)} detections:")
+            for i, box in enumerate(boxes):
+                cls = int(box.cls[0])
+                conf = float(box.conf[0])
+                print(f"Detection {i+1}:")
+                print(f"  Class: {model.names[cls]}")
+                print(f"  Confidence: {conf:.2f}")
+                print(f"  Bounding box: {box.xyxy[0].tolist()}")
         
         # Get the annotated frame
         annotated_frame = result.plot()
         
         # Display image dimensions and type for debugging
-        print(f"Image shape: {annotated_frame.shape}")
+        print(f"\nImage shape: {annotated_frame.shape}")
         print(f"Image dtype: {annotated_frame.dtype}")
         
         cv2.imshow("Detections", annotated_frame)
@@ -69,6 +91,6 @@ def run_inference(model_path, image_path):
 
 if __name__ == "__main__":
     run_inference(
-        model_path="yolov8n.pt",  # Using the model in root directory
-        image_path="data/images/image_1.tiff"  # Try with a TIFF file
+        model_path="runs/train/thermal_yolo/weights/best.pt",  # Updated to use the latest trained model
+        image_path="data/processed/train/images/image_7.jpg"  # Updated to use processed jpg image
     )

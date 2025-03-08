@@ -1,7 +1,10 @@
-train: C:/Users/victo/dev/thermal_detection_project/data/images/train
-val: C:/Users/victo/dev/thermal_detection_project/data/images/val
+path: C:\Users\victo\dev\thermal_detection_project
+train: data\processed\train
+val: data\processed\val
 
 names:
   0: Pedestrian
   1: Cyclist
   2: Car
+
+nc: 3  # number of classes
