@@ -116,51 +116,55 @@ def train_model():
 
     # Training arguments
     training_args = {
-        'data': 'data/data.yaml',        # path to data.yaml
-        'epochs': 200,                   # number of epochs (increased from 50)
-        'imgsz': 640,                    # image size (increased from 320)
-        'batch': 1,                      # batch size
-        'patience': 50,                  # early stopping patience (increased from 20)
-        'device': 'cpu',                 # device to use
-        'workers': 0,                    # number of worker threads
-        'project': 'runs/train',         # project name
-        'name': 'thermal_yolo',          # experiment name
-        'exist_ok': True,               # overwrite existing experiment
-        'pretrained': True,             # use pretrained model
-        'optimizer': 'SGD',             # optimizer
-        'verbose': True,                # verbose output
-        'seed': 42,                     # random seed
-        'deterministic': True,          # deterministic training
-        'single_cls': False,            # train as single-class dataset
-        'rect': False,                  # rectangular training
-        'cos_lr': True,                # cosine learning rate scheduler
-        'close_mosaic': 10,            # disable mosaic augmentation for final epochs
-        'resume': False,               # resume training from last checkpoint
-        'amp': False,                  # Automatic Mixed Precision (disabled)
-        'fraction': 1.0,               # dataset fraction to train on
-        'cache': False,               # cache images for faster training
-        'lr0': 0.01,                  # initial learning rate
-        'lrf': 0.001,                 # final learning rate (decreased from 0.01)
-        'momentum': 0.937,            # SGD momentum/Adam beta1
-        'weight_decay': 0.0005,       # optimizer weight decay
-        'warmup_epochs': 5.0,         # warmup epochs (increased from 3.0)
-        'warmup_momentum': 0.8,       # warmup initial momentum
-        'warmup_bias_lr': 0.1,        # warmup initial bias lr
-        'box': 7.5,                   # box loss gain
-        'cls': 0.5,                   # cls loss gain
-        'dfl': 1.5,                   # dfl loss gain
-        'plots': False,               # disable plotting (saves memory)
-        'save_period': -1,            # save checkpoint every x epochs (-1 to disable)
-        'degrees': 0.0,               # rotation augmentation
-        'translate': 0.2,             # translation augmentation (increased from 0.1)
-        'scale': 0.5,                 # scale augmentation
-        'shear': 0.0,                 # shear augmentation
-        'perspective': 0.0,           # perspective augmentation
-        'flipud': 0.5,                # vertical flip augmentation (added)
-        'fliplr': 0.5,                # horizontal flip augmentation
-        'mosaic': 1.0,                # mosaic augmentation
-        'mixup': 0.1,                 # mixup augmentation (added)
-        'copy_paste': 0.1,            # copy-paste augmentation (added)
+        'data': 'data/data.yaml',        
+        'epochs': 200,                   
+        'imgsz': 640,                    
+        'batch': 1,                      
+        'patience': 50,                  
+        'device': 'cpu',                 
+        'workers': 0,                    
+        'project': 'runs/train',         
+        'name': 'thermal_yolo',          
+        'exist_ok': True,               
+        'pretrained': True,             
+        'optimizer': 'SGD',             
+        'verbose': True,                
+        'seed': 42,                     
+        'deterministic': True,          
+        'single_cls': False,            
+        'rect': False,                  
+        'cos_lr': True,                
+        'close_mosaic': 10,            
+        'resume': False,               
+        'amp': False,
+        'fraction': 1.0,               
+        'cache': False,               
+        'lr0': 0.01,                  
+        'lrf': 0.001,                
+        'momentum': 0.937,            
+        'weight_decay': 0.0005,       
+        'warmup_epochs': 5.0,         
+        'warmup_momentum': 0.8,       
+        'warmup_bias_lr': 0.1,        
+        'box': 7.5,                   
+        'cls': 1.5,                   # Increased classification loss weight for better class detection
+        'dfl': 1.5,                   
+        'plots': False,               
+        'save_period': -1,            
+        'degrees': 0.0,               
+        'translate': 0.2,             
+        'scale': 0.5,                 
+        'shear': 0.0,                 
+        'perspective': 0.0,           
+        'flipud': 0.5,                
+        'fliplr': 0.5,                
+        'mosaic': 1.0,                
+        'mixup': 0.1,                 
+        'copy_paste': 0.1,            
+        'conf': 0.25,                # Confidence threshold for detection
+        'iou': 0.5,                  # IoU threshold for NMS
+        'task': 'detect',            # Specify task as detection
+        'mode': 'train'              # Specify mode as training
     }
 
     # Start training
